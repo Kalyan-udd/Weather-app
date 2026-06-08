@@ -15,8 +15,8 @@ app = FastAPI()
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):  
     API_KEY = os.getenv("API_KEY_OPEN_WEATHER_API")
-    Lattitude = 15.2000
-    longitude = 77.2090
+    Lattitude = 15.400
+    longitude = 81.900
     url = f"https://api.openweathermap.org/data/2.5/weather?lat={Lattitude}&lon={longitude}&appid={API_KEY}&units=metric"
     response = requests.get(url)
     if response.status_code == 200:
