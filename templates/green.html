@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-left: 20px;
+        }
+        .header h1 {
+            color: var(--text-main);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .material-symbols-outlined {
+            font-size: 36px;
+            color: black; /* Default is usually 24px. Increase this number! */
+        }
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .meta-info span {
+            background: #e2e8f0;
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* Grid Layout for the 40 Intervals */
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 10px auto;
+        }
+
+        /* Individual Weather Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .time {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .condition {
+            text-transform: capitalize;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        /* Temperature Focus */
+        .temp-block {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .temp-main {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+        .temp-feels {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        /* Detailed Stats List */
+        .details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.95em;
+        }
+        .details li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .details li:last-child {
+            border-bottom: none;
+        }
+        .label { color: var(--text-muted); }
+        .value { font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1><span class="material-symbols-outlined">location_on</span> {{ data.name }}</h1>
+        <div class="meta-info">
+            <span><span class="material-symbols-outlined">wb_twilight</span>Sunrise: {{ sunrise }}</span>
+            <span><span class="material-symbols-outlined">water_lux</span>Sunset: {{ sunset }}</span>
+            <span><span class="material-symbols-outlined">search_activity</span>Timezone Offset: {{ data.timezone/3600 }} hrs</span>
+        </div>
+    </div>
+
+    <div class="forecast-grid">
+        
+        <div class="card">
+            <div class="card-header">
+                <div class="time"><span class="material-symbols-outlined">calendar_month</span> {{ current_time }}</div>
+                <div class="condition">{{ description_clouds }}</div>
+            </div>
+            
+            <div class="temp-block">
+                <div class="temp-main">{{ data.main.temp }}°C</div>
+                <div class="temp-feels">Feels like {{ data.main.feels_like }}°C</div>
+            </div>
+
+            <div class="card-header">
+                <div class="weather">
+                    <span class="label"> Weather </span></div>
+                <div class="description"><span class="value">{{ data.weather[0].main }}, {{ data.weather[0].description }}</span></div>
+            </div>
+
+            <ul class="details">
+                <li>
+                    <span class="label">💧 Humidity</span>
+                    <span class="value">{{ data.main.humidity }}%</span>
+                </li>
+                <li>
+                    <span class="label">💨 Wind Speed</span>
+                    <span class="value">{{ (data.wind.speed*18/5) | round | int }} Kph</span>
+                </li>
+                <li>
+                    <span class="label">💨 Wind Gust</span>
+                    <span class="value">{{ (data.wind.gust*18/5) | round | int }} Kph</span>
+                </li>
+                <li>
+                    <span class="label">💨 Wind angle</span>
+                    <span class="value">{{ data.wind.deg }}°</span>
+                </li>
+                <li>
+                    <span class="label">👁️ Visibility</span>
+                    <span class="value">{{ data.visibility/1000 }} Km</span>
+                </li>
+                <li>
+                    <span class="label">⏲️ Pressure</span>
+                    <span class="value">{{ data.main.pressure }} hPa</span>
+                </li>
+                <li>
+                    <span class="label">🌊 Sea / Grnd Pressure</span>
+                    <span class="value">{{ data.main.sea_level }} / {{ data.main.grnd_level }}</span>
+                </li>
+            </ul>
+        </div>
+        </div>
+
+</body>
+</html>
