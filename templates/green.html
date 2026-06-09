@@ -212,38 +212,26 @@
         </div>
         </div>
 
-    <script>
-        // Check if the URL already has the coordinates so we don't get stuck in a reload loop
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        if (!urlParams.has('lat') || !urlParams.has('lon')) {
-            // Check if the browser supports location tracking
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    // 1. SUCCESS: The user clicked "Allow"
-                    function(position) {
-                        window.location.href = `/?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-                    },
-                    
-                    // 2. BLOCKED: The user clicked "Block" (The Ninja Fallback triggers)
-                    function(error) {
-                        fetch('https://get.geojs.io/v1/ip/geo.json')
-                            .then(response => response.json())
-                            .then(data => {
-                                // Reload with the IP-based city coordinates
-                                window.location.href = `/?lat=${data.latitude}&lon=${data.longitude}`;
-                            })
-                            .catch(() => {
-                                // Ultimate fallback if their network blocks the IP lookup
-                                window.location.href = "/?lat=16.1786&lon=81.1350";
-                            });
-                    }
-                );
-            } else {
-                // Fallback for very old browsers
-                window.location.href = "/?lat=16.1786&lon=81.1350";
+        <script>
+            // Check if the URL already has coordinates to prevent an infinite reload loop
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (!urlParams.has('lat') || !urlParams.has('lon')) {
+                // Bypass the browser's GPS completely. 
+                // Silently fetch the user's IP location from GeoJS immediately.
+                fetch('https://get.geojs.io/v1/ip/geo.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Success: Instantly reload the page with their IP's city coordinates
+                        window.location.href = `/?lat=${data.latitude}&lon=${data.longitude}`;
+                    })
+                    .catch(() => {
+                        // Fallback: If they have a strict ad-blocker or the API is down, 
+                        // default safely to Machilipatnam.
+                        window.location.href = "/?lat=16.1786&lon=81.1350";
+                    });
             }
-        }
-    </script>
+        </script>
+
 </body>
 </html>
