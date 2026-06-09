@@ -13,11 +13,9 @@ templates = Jinja2Templates(directory='templates')
 app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request):  
+async def home(request: Request, lat: float = 16.1786, lon: float = 81.1350):  
     API_KEY = os.getenv("API_KEY_OPEN_WEATHER_API")
-    Lattitude = 16.1786
-    longitude = 81.1350
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={Lattitude}&lon={longitude}&appid={API_KEY}&units=metric"
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
